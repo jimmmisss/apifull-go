@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com.br/jimmmisss/api/pkg/entity"
@@ -22,35 +23,43 @@ type Product struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func NewProduct(name string, price float64) (*Product, error) {
+func NewProduct(name string, price float64) (*Product, []error) {
 	product := &Product{
 		ID:        entity.NewId(),
 		Name:      name,
 		Price:     price,
 		CreatedAt: time.Now(),
 	}
-	err := product.Validate()
-	if err != nil {
-		return nil, err
+	errors := product.Validate()
+	if errors != nil {
+		return nil, errors
 	}
 	return product, nil
 }
 
-func (p *Product) Validate() error {
+func (p *Product) Validate() []error {
+	var allErrors []error
+
 	if p.ID.String() == "" {
-		return ErrIDIsRequired
+		allErrors = append(allErrors, ErrIDIsRequired)
 	}
 	if _, err := entity.ParseID(p.ID.String()); err != nil {
-		return ErrInvalidID
+		allErrors = append(allErrors, ErrInvalidID)
 	}
 	if p.Name == "" {
-		return ErrNameIsRequired
+		allErrors = append(allErrors, ErrNameIsRequired)
 	}
 	if p.Price == 0 {
-		return ErrPriceIsRequired
+		allErrors = append(allErrors, ErrPriceIsRequired)
 	}
 	if p.Price < 0 {
-		return ErrInvalidPrice
+		allErrors = append(allErrors, ErrInvalidPrice)
 	}
+
+	if len(allErrors) > 0 {
+		fmt.Printf("%d errors were found\n", len(allErrors))
+		return allErrors
+	}
+
 	return nil
 }
