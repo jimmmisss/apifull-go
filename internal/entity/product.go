@@ -2,7 +2,6 @@ package entity
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com.br/jimmmisss/api/pkg/entity"
@@ -57,7 +56,6 @@ func (p *Product) Validate() []error {
 	}
 
 	if len(allErrors) > 0 {
-		fmt.Printf("%d errors were found\n", len(allErrors))
 		return allErrors
 	}
 
