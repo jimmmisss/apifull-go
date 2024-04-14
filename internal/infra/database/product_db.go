@@ -21,7 +21,7 @@ func (p *Product) Create(product *entity.Product) error {
 
 func (p *Product) FindById(id string) (*entity.Product, error) {
 	var product entity.Product
-	err := p.DB.First(&product).Error
+	err := p.DB.First(&product, "id = ?", id).Error
 	return &product, err
 }
 
