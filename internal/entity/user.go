@@ -20,12 +20,12 @@ type User struct {
 	Password string    `json:"-"`
 }
 
-func NewUser(name, email, password string) (*User, []error) {
+func NewUser(name, email, password string) (*User, error) {
 	hash, err := GeneratePasswordBCrypt(password)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	user := &User{
 		ID:       entity.NewId(),
 		Name:     name,
@@ -33,20 +33,13 @@ func NewUser(name, email, password string) (*User, []error) {
 		Password: string(hash),
 	}
 
-	errors := user.Validate()
-	if errors != nil {
-		return nil, errors
-	}
-
 	return user, nil
 }
 
-func GeneratePasswordBCrypt(password string) ([]byte, []error) {
-	var errors []error
+func GeneratePasswordBCrypt(password string) ([]byte, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		errors := append(errors, err)
-		return nil, errors
+		return nil, err
 	}
 	return hash, nil
 }

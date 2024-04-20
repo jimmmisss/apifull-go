@@ -25,10 +25,14 @@ func main() {
 		panic(err)
 
 	}
+
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
 
-	routes := initializeRoutes(productHandler)
+	userDB := database.NewUser(db)
+	userHandler := handlers.NewUserHandler(userDB)
+
+	routes := initializeRoutes(productHandler, userHandler)
 	server := &http.Server{
 		Addr:    ":8080",
 		Handler: routes,
@@ -41,12 +45,17 @@ func main() {
 	}
 }
 
-func initializeRoutes(productHandler *handlers.ProductHandler) *http.ServeMux {
+func initializeRoutes(productHandler *handlers.ProductHandler, userHandler *handlers.UserHandler) *http.ServeMux {
 	mux := http.NewServeMux()
+
+	//Products Routes
 	mux.HandleFunc("GET /products", productHandler.GetProducts)
 	mux.HandleFunc("GET /products/{id}", productHandler.GetProduct)
 	mux.HandleFunc("POST /products", productHandler.CreateProduct)
 	mux.HandleFunc("PUT /products/{id}", productHandler.UpdateProduct)
 	mux.HandleFunc("DELETE /products/{id}", productHandler.DeleteProduct)
+
+	//Users Routes
+	mux.HandleFunc("POST /users", userHandler.CreateUser)
 	return mux
 }
