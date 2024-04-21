@@ -11,11 +11,11 @@ type CreateUserInput struct {
 	Password string `json:"password"`
 }
 
-type GetJWTInput struct {
+type GetTokenInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type GetJWTOutput struct {
+type GetTokenOutput struct {
 	AccessToken string `json:"access_token"`
 }
