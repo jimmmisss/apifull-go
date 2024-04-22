@@ -54,7 +54,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) GetToken(w http.ResponseWriter, r *http.Request) {
 	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
-	jwtExpiresIn := r.Context().Value("JwtExperesIn").(int)
+	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
 	var user dto.GetTokenInput
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {

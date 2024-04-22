@@ -5,14 +5,16 @@ import (
 	"github.com.br/jimmmisss/api/internal/entity"
 	"github.com.br/jimmmisss/api/internal/infra/database"
 	"github.com.br/jimmmisss/api/internal/infra/webserver/handlers"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/jwtauth"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 )
 
 func main() {
-	_, err := configs.LoadConfig(".")
+	configs, err := configs.LoadConfig(".")
 	if err != nil {
 		panic(err)
 	}
@@ -32,30 +34,27 @@ func main() {
 	userDB := database.NewUser(db)
 	userHandler := handlers.NewUserHandler(userDB)
 
-	routes := initializeRoutes(productHandler, userHandler)
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: routes,
-	}
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.WithValue("jwt", configs.TokenAuth))
+	r.Use(middleware.WithValue("JwtExpiresIn", configs.JWTExpiresIn))
 
-	log.Println("Server running on port 8080")
-	err = server.ListenAndServe()
+	r.Post("/users", userHandler.CreateUser)
+	r.Post("/token", userHandler.GetToken)
+
+	r.Route("/products", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(configs.TokenAuth))
+		r.Use(jwtauth.Authenticator)
+		r.Post("/", productHandler.CreateProduct)
+		r.Get("/", productHandler.GetProducts)
+		r.Get("/{id}", productHandler.GetProduct)
+		r.Put("/{id}", productHandler.UpdateProduct)
+		r.Delete("/{id}", productHandler.DeleteProduct)
+	})
+
+	err = http.ListenAndServe(":8080", r)
 	if err != nil {
 		panic(err)
 	}
-}
-
-func initializeRoutes(productHandler *handlers.ProductHandler, userHandler *handlers.UserHandler) *http.ServeMux {
-	mux := http.NewServeMux()
-
-	//Products Routes
-	mux.HandleFunc("GET /products", productHandler.GetProducts)
-	mux.HandleFunc("GET /products/{id}", productHandler.GetProduct)
-	mux.HandleFunc("POST /products", productHandler.CreateProduct)
-	mux.HandleFunc("PUT /products/{id}", productHandler.UpdateProduct)
-	mux.HandleFunc("DELETE /products/{id}", productHandler.DeleteProduct)
-
-	//Users Routes
-	mux.HandleFunc("POST /users", userHandler.CreateUser)
-	return mux
 }
