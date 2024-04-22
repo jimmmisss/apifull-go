@@ -1,0 +1,35 @@
+POST http://localhost:8080/products HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4MjMzMTAsInN1YiI6IjIwYzRjNjE0LTRhYjktNDE5Ni05MTdjLTNjMGVkOGZkM2NhZiJ9.ayJr7MH67Fkn7bHjP7P45pN_P3z7pEBsfoxfRKK8b8k
+
+{
+  "name": "My Product",
+  "price": 100
+}
+
+###
+
+GET http://localhost:8080/products HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4MjMzMTAsInN1YiI6IjIwYzRjNjE0LTRhYjktNDE5Ni05MTdjLTNjMGVkOGZkM2NhZiJ9.ayJr7MH67Fkn7bHjP7P45pN_P3z7pEBsfoxfRKK8b8k
+
+###
+
+GET http://localhost:8080/products/fa432285-e4fe-4f87-8ed4-0acfc62a1fd2 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4MjMzMTAsInN1YiI6IjIwYzRjNjE0LTRhYjktNDE5Ni05MTdjLTNjMGVkOGZkM2NhZiJ9.ayJr7MH67Fkn7bHjP7P45pN_P3z7pEBsfoxfRKK8b8k
+
+###
+
+PUT http://localhost:8080/products/fa432285-e4fe-4f87-8ed4-0acfc62a1fd2 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4MjMzMTAsInN1YiI6IjIwYzRjNjE0LTRhYjktNDE5Ni05MTdjLTNjMGVkOGZkM2NhZiJ9.ayJr7MH67Fkn7bHjP7P45pN_P3z7pEBsfoxfRKK8b8k
+
+{
+  "name": "My Product Updated",
+  "price": 200
+}
+
+###
+
+DELETE http://localhost:8080/products/fa432285-e4fe-4f87-8ed4-0acfc62a1fd2 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4MjMzMTAsInN1YiI6IjIwYzRjNjE0LTRhYjktNDE5Ni05MTdjLTNjMGVkOGZkM2NhZiJ9.ayJr7MH67Fkn7bHjP7P45pN_P3z7pEBsfoxfRKK8b8k
+

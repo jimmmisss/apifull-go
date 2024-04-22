@@ -5,8 +5,8 @@ import (
 	"github.com.br/jimmmisss/api/internal/entity"
 	"github.com.br/jimmmisss/api/internal/infra/database"
 	"github.com.br/jimmmisss/api/internal/infra/webserver/handlers"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	configuration, err := configs.LoadConfig(".")
+	configs, err := configs.LoadConfig(".")
 	if err != nil {
 		panic(err)
 	}
@@ -37,14 +37,14 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.WithValue("jwt", configuration.TokenAuth))
-	r.Use(middleware.WithValue("JwtExpiresIn", configuration.JWTExpiresIn))
+	r.Use(middleware.WithValue("jwt", configs.TokenAuth))
+	r.Use(middleware.WithValue("JwtExpiresIn", configs.JwtExpiresIn))
 
 	r.Post("/users", userHandler.CreateUser)
 	r.Post("/token", userHandler.GetToken)
 
 	r.Route("/products", func(r chi.Router) {
-		r.Use(jwtauth.Verifier(configuration.TokenAuth))
+		r.Use(jwtauth.Verifier(configs.TokenAuth))
 		r.Use(jwtauth.Authenticator)
 		r.Post("/", productHandler.CreateProduct)
 		r.Get("/", productHandler.GetProducts)
