@@ -24,14 +24,22 @@ func NewUserHandler(userDB database.UserInterface) *UserHandler {
 	}
 }
 
+// Create user godoc
+// @Summary Create user
+// @Description Create user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateUserInput true "user request"
+// @Success 201
+// @Failure 500 {object} Error
+// Router /users [post]
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user dto.CreateUserInput
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		msg := Error{
-			Message: err.Error(),
-		}
+		msg := Error{Message: err.Error()}
 		json.NewEncoder(w).Encode(msg)
 		return
 	}
@@ -52,6 +60,17 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// GetJWT godoc
+// @Summary Get a user JWT
+// @Description Get a user JWT
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body dto.GetTokenInput true "user credentials"
+// @Success 200 {object} dto.GetTokenOutput
+// @Failure 404 {object} Error
+// @Failure 500 {object} Error
+// Router users/token [post]
 func (h *UserHandler) GetToken(w http.ResponseWriter, r *http.Request) {
 	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
 	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
