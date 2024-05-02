@@ -40,8 +40,10 @@ func main() {
 	r.Use(middleware.WithValue("jwt", configs.TokenAuth))
 	r.Use(middleware.WithValue("JwtExpiresIn", configs.JwtExpiresIn))
 
-	r.Post("/users", userHandler.CreateUser)
-	r.Post("/token", userHandler.GetToken)
+	r.Route("/users", func(r chi.Router) {
+		r.Post("/", userHandler.CreateUser)
+		r.Post("/token", userHandler.GetToken)
+	})
 
 	r.Route("/products", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(configs.TokenAuth))
